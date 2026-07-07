@@ -1,0 +1,91 @@
+NOVATECH SOLUÇÕES DIGITAIS — RELATÓRIO ANUAL 2024
+==================================================
+
+1. VISÃO GERAL DA EMPRESA
+--------------------------
+A NovaTech Soluções Digitais é uma empresa de tecnologia fundada em 2015,
+especializada em desenvolvimento de software sob medida, serviços de
+computação em nuvem e consultoria de transformação digital. Atualmente conta
+com 320 colaboradores distribuídos em quatro escritórios: São Paulo (sede),
+Belo Horizonte, Porto Alegre e Recife.
+
+2. DESEMPENHO FINANCEIRO 2024
+------------------------------
+Receita Total: R$ 87.400.000,00 (oitenta e sete milhões e quatrocentos mil reais)
+Crescimento em relação a 2023: 23%
+
+Distribuição por segmento:
+  - Desenvolvimento de software sob medida: R$ 41.200.000 (47%)
+  - Serviços de nuvem e infraestrutura gerenciada: R$ 28.100.000 (32%)
+  - Consultoria e treinamento: R$ 18.100.000 (21%)
+
+EBITDA: R$ 14.300.000 (margem de 16,4%)
+Resultado líquido: R$ 9.800.000
+
+3. POLÍTICA DE CANCELAMENTO DE RESERVAS DE SERVIÇO
+-----------------------------------------------------
+A NovaTech opera um modelo de reserva de capacidade para projetos de desenvolvimento.
+Os clientes podem reservar sprints e equipes dedicadas com até 90 dias de antecedência.
+
+Regras de cancelamento:
+  - Cancelamento com 30 dias ou mais de antecedência: cancelamento gratuito, sem ônus.
+  - Cancelamento entre 8 e 29 dias de antecedência: multa de 15% sobre o valor
+    total dos serviços reservados.
+  - Cancelamento com 7 dias ou menos de antecedência: multa de 30% sobre o valor
+    total dos serviços reservados.
+  - Cancelamento no dia do início do serviço ou após o início: multa de 50% e
+    cobrança integral das horas já consumidas pela equipe.
+
+Exceções:
+  - Casos de força maior devidamente documentados (desastres naturais, problemas
+    de saúde graves comprovados em atestado médico) estão isentos de multa.
+  - Projetos governamentais seguem legislação específica de contratação pública.
+
+4. POLÍTICA DE REEMBOLSO
+--------------------------
+4.1 Reembolso por falha de entrega:
+  Caso a NovaTech não entregue o escopo contratado dentro do prazo acordado
+  (sem justificativa técnica aceita pelo cliente), o cliente tem direito a:
+    - Reembolso integral do valor pago pelas funcionalidades não entregues.
+    - Crédito adicional de 10% sobre o valor reembolsado para uso em projetos futuros.
+
+4.2 Reembolso por insatisfação com qualidade:
+  O cliente pode solicitar revisão gratuita dentro de 30 dias após a entrega.
+  Se após 2 revisões o problema persistir, o cliente pode solicitar reembolso
+  parcial de até 25% do valor do sprint afetado.
+
+4.3 Prazo para solicitação de reembolso:
+  Todas as solicitações de reembolso devem ser feitas em até 60 dias após
+  a data de entrega ou faturamento. Solicitações fora deste prazo não serão aceitas.
+
+4.4 Processo de reembolso:
+  - Solicitação via e-mail para financeiro@novatech.com.br com número do contrato.
+  - Análise em até 10 dias úteis.
+  - Devolução em até 30 dias úteis após aprovação, via TED para a conta cadastrada.
+
+5. PLANOS DE EXPANSÃO 2025
+----------------------------
+A NovaTech planeja:
+  - Abertura de escritório em Fortaleza (previsão: Q2/2025)
+  - Lançamento de plataforma SaaS própria para gestão de projetos ágeis (Q3/2025)
+  - Expansão para mercado latino-americano: Chile e Colômbia (Q4/2025)
+  - Meta de receita 2025: R$ 110.000.000 (crescimento de 26%)
+
+6. BENEFÍCIOS AOS COLABORADORES
+---------------------------------
+  - Plano de saúde Bradesco (cobertura nacional) para colaborador e dependentes
+  - Vale-refeição: R$ 52,00/dia útil
+  - Participação nos lucros (PLR): distribuição em junho e dezembro
+  - Horário flexível: core hours das 10h às 16h
+  - Home office: 3 dias por semana para áreas técnicas
+  - Bolsa de estudos: até R$ 800/mês para cursos e certificações aprovados pelo gestor
+  - Seguro de vida em grupo: cobertura de R$ 200.000
+
+7. CONTATOS INSTITUCIONAIS
+----------------------------
+Sede: Av. Paulista, 1374, 10º andar — São Paulo/SP — CEP 01310-100
+Telefone geral: (11) 3456-7890
+Comercial: vendas@novatech.com.br
+Financeiro: financeiro@novatech.com.br
+RH: rh@novatech.com.br
+Suporte técnico: suporte@novatech.com.br (24h)

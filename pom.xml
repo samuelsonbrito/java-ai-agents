@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.estudo.agents</groupId>
+    <artifactId>ai-agents-java</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>AI Agents with Java — Estudo LangChain4j</name>
+    <description>Implementação didática dos padrões do livro "AI Agents with Java" usando LangChain4j 1.8.0</description>
+
+    <properties>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Versão principal do LangChain4j — usada nas fases 1 a 3 -->
+        <langchain4j.version>1.0.0-beta1</langchain4j.version>
+        <!-- Versão beta do módulo de embeddings e parsers — alinhada com a principal -->
+        <langchain4j.beta.version>1.0.0-beta1</langchain4j.beta.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- ================================================================
+             NÚCLEO DO LANGCHAIN4J
+             Contém as abstrações base: ChatModel, AiServices, @SystemMessage,
+             @UserMessage, @V, Memory, etc.
+             Usado em: TODAS as fases.
+        ================================================================ -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+
+        <!-- ================================================================
+             MÓDULO AGENTIC
+             Fornece o AgenticScope, sequenceBuilder, loopBuilder,
+             parallelBuilder, conditionalBuilder, supervisorBuilder,
+             e a interface Planner — todos os padrões de coordenação multiagente.
+             Usado em: fases 2A a 2E.
+        ================================================================ -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-core</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+
+        <!-- ================================================================
+             INTEGRAÇÃO OPENAI
+             Builder para ChatModel apontando para gpt-4o-mini (ou outro modelo
+             da OpenAI). Requer OPENAI_API_KEY como variável de ambiente.
+             Usado em: fases 1 a 3B (toda parte que chama LLM via API).
+        ================================================================ -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-open-ai</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+
+        <!-- ================================================================
+             EMBEDDINGS BGE LOCAL (in-process)
+             Modelo de embeddings bge-small-en rodando localmente via ONNX,
+             sem chamada de API. Crucial para o RAG da fase 3A:
+             o custo de embeddings é zero e o estudo pode ocorrer offline.
+             Usado em: fases 3A e 3B.
+        ================================================================ -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-embeddings-bge-small-en-v15-q</artifactId>
+            <version>${langchain4j.beta.version}</version>
+        </dependency>
+
+        <!-- ================================================================
+             PARSER DE PDF (Apache PDFBox)
+             Permite ler arquivos .pdf como fonte de documentos para o RAG.
+             Neste projeto usamos .txt, mas a dependência é adicionada para
+             a fase 3B já poder parsear PDFs sem alteração no pom.
+             Usado em: fase 3B (esqueleto e eventuais extensões).
+        ================================================================ -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-document-parser-apache-pdfbox</artifactId>
+            <version>${langchain4j.beta.version}</version>
+        </dependency>
+
+        <!-- ================================================================
+             LOGGING — SLF4J SIMPLES
+             Captura os logs internos do LangChain4j (chamadas HTTP, tokens,
+             decisões do supervisor) e os exibe no console sem configuração
+             adicional. Indispensável para depurar o comportamento dos agentes.
+             Usado em: todas as fases.
+        ================================================================ -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.13</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- ============================================================
+                 COMPILADOR JAVA 21
+                 Garante que preview features e records sejam compilados
+                 corretamente. O encoding UTF-8 evita problemas com acentos
+                 nos comentários e mensagens em português.
+            ============================================================ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- ============================================================
+                 EXEC MAVEN PLUGIN
+                 Permite rodar qualquer classe Main do projeto sem gerar um
+                 JAR executável. Uso: mvn -q compile exec:java -Dexec.mainClass=<FQCN>
+                 Cada fase tem seu comando exato documentado no Javadoc do Main.
+            ============================================================ -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <mainClass>com.estudo.agents.parte1.Main</mainClass>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
