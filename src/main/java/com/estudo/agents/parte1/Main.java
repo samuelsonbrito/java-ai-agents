@@ -65,7 +65,7 @@ public class Main {
         // parsear a resposta e devolvê-la como String Java.
         // ----------------------------------------------------------------
         var assistente = AiServices.builder(Assistente.class)
-                .chatLanguageModel(chatModel)
+                .chatModel(chatModel)
                 .build();
 
         // ----------------------------------------------------------------

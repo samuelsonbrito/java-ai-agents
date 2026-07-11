@@ -7,12 +7,11 @@
  *
  * <p>Conceitos-chave deste pacote:
  * <ul>
- *   <li><strong>AgenticScope</strong> — memória compartilhada (Map de chave→valor) que
- *       passa estado entre os agentes da sequência.</li>
- *   <li><strong>@V("nome")</strong> — anotação que injeta um valor do AgenticScope como
+ *   <li><strong>@V("nome")</strong> — anotação que injeta um valor do escopo interno como
  *       parâmetro de método. O "nome" DEVE casar exatamente com a outputKey de quem
  *       produziu o valor (erro de nome é a causa nº 1 de variável chegar vazia).</li>
- *   <li><strong>outputKey</strong> — chave sob a qual o agente grava sua saída no escopo.</li>
+ *   <li><strong>outputKey</strong> — chave sob a qual o agente grava sua saída no escopo
+ *       gerenciado internamente pelo {@code sequenceBuilder}.</li>
  * </ul>
  *
  * <p>Fluxo deste exemplo: história de vida → CvGenerator (masterCv) → CvTailor (finalCv).

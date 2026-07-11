@@ -1,7 +1,7 @@
 package com.estudo.agents.parte2.sequencing;
 
+import dev.langchain4j.agentic.AgenticServices;
 import dev.langchain4j.model.openai.OpenAiChatModel;
-import dev.langchain4j.service.AiServices;
 
 /**
  * Ponto de entrada da Fase 2A: padrão Sequenciamento (Prompt Chaining).
@@ -9,11 +9,11 @@ import dev.langchain4j.service.AiServices;
  * <h2>O que este exemplo demonstra</h2>
  * Dois agentes especializados em série:
  * <ol>
- *   <li>{@code CvGenerator} converte história de vida → CV mestre (genérico)</li>
- *   <li>{@code CvTailor} adapta o CV mestre → CV final (aderente à vaga)</li>
+ *   <li>{@code GeradorDeCv} converte história de vida → CV mestre (genérico)</li>
+ *   <li>{@code AdaptadorDeCv} adapta o CV mestre → CV final (aderente à vaga)</li>
  * </ol>
- * O estado intermediário fica visível no console para o estudante
- * acompanhar o encadeamento passo a passo.
+ * O {@code sequenceBuilder} coordena os agentes via escopo interno,
+ * passando automaticamente a saída de um como entrada do próximo.
  *
  * <h2>Como executar</h2>
  * <pre>
@@ -25,23 +25,12 @@ import dev.langchain4j.service.AiServices;
  * <pre>
  * === Fase 2A: Sequenciamento ===
  *
- * [PASSO 1] Chamando CvGenerator com história de vida...
- *
- * ── Após CvGenerator ──
- * Chaves no escopo: [masterCv]
- * [masterCv] → RESUMO PROFISSIONAL
- * Engenheiro de software com 8 anos de experiência...
- *
- * [PASSO 2] Chamando CvTailor para adaptar à vaga...
- *
- * ── Após CvTailor ──
- * Chaves no escopo: [masterCv, finalCv]
- * ...
- *
  * ╔══════════════════════════════════════╗
  *   CV FINAL ADAPTADO PARA A VAGA
  * ╚══════════════════════════════════════╝
- * ...
+ *
+ * RESUMO PROFISSIONAL
+ * Engenheiro de software sênior com 8 anos de experiência...
  * </pre>
  */
 public class Main {
@@ -50,27 +39,28 @@ public class Main {
 
         // Modelo compartilhado entre todos os agentes da sequência.
         // Temperatura baixa = mais determinismo, melhor para tarefas estruturadas.
-        var chatModel = OpenAiChatModel.builder()
+        var modeloDeChat = OpenAiChatModel.builder()
                 .apiKey(System.getenv("OPENAI_API_KEY"))
                 .modelName("gpt-4o-mini")
                 .temperature(0.3)
                 .build();
 
-        // Cada agente é um AI Service independente — não sabem da existência um do outro.
-        // A coordenação acontece no Main, via AgenticScope.
-        var gerador = AiServices.builder(CvGenerator.class)
-                .chatLanguageModel(chatModel)
+        // outputKey deve bater com o @V que o próximo agente usa para consumir o resultado.
+        // AdaptadorDeCv espera @V("cvMestre"), então o gerador grava nessa chave.
+        var gerador = AgenticServices.agentBuilder(GeradorDeCv.class)
+                .chatModel(modeloDeChat)
+                .outputKey("cvMestre")
                 .build();
 
-        var adaptador = AiServices.builder(CvTailor.class)
-                .chatLanguageModel(chatModel)
+        // O resultado do adaptador é a saída final; "cvFinal" é o que a sequência devolve.
+        var adaptador = AgenticServices.agentBuilder(AdaptadorDeCv.class)
+                .chatModel(modeloDeChat)
+                .outputKey("cvFinal")
                 .build();
 
         // ---------------------------------------------------------------
         // DADOS DE ENTRADA
-        // "historicoDeVida" é nome de negócio (português); o conceito
-        // é o mesmo que "input" ou "userInput" — mas nomear assim
-        // deixa claro o que o dado representa.
+        // Nomes em português = conceitos de negócio (regra do projeto).
         // ---------------------------------------------------------------
         String historicoDeVida = """
                 Me chamo Lucas Ferreira, tenho 32 anos. Sou formado em Ciência da
@@ -92,35 +82,19 @@ public class Main {
                 mentorar times, participar de entrevistas técnicas.
                 """;
 
-        // ---------------------------------------------------------------
-        // EXECUÇÃO DA SEQUÊNCIA
-        // ---------------------------------------------------------------
-        var escopo = new AgenticScope();
+        // sequenceBuilder monta a cadeia: GeradorDeCv → AdaptadorDeCv.
+        // O escopo interno passa "cvMestre" automaticamente entre eles.
+        var sequencia = AgenticServices
+                .sequenceBuilder(GeradorSequencialDeCv.class)
+                .subAgents(gerador, adaptador)
+                .outputKey("cvFinal")
+                .build();
 
-        System.out.println("=== Fase 2A: Sequenciamento ===\n");
-
-        // PASSO 1 — agente 1 grava sua saída no escopo com a chave "masterCv"
-        System.out.println("[PASSO 1] Chamando CvGenerator com história de vida...");
-        String masterCv = gerador.gerarCv(historicoDeVida);
-        escopo.colocar("masterCv", masterCv);  // outputKey = "masterCv"
-
-        // Exibe estado intermediário — o estudante VÊ o CV mestre antes do final
-        escopo.imprimir("Após CvGenerator");
-
-        // PASSO 2 — agente 2 lê "masterCv" do escopo (@V equivalente) e produz "finalCv"
-        System.out.println("[PASSO 2] Chamando CvTailor para adaptar à vaga...");
-        String cvMestre = escopo.obter("masterCv");  // equivale a @V("masterCv")
-        String finalCv = adaptador.adaptarCv(cvMestre, descricaoVaga);
-        escopo.colocar("finalCv", finalCv);  // outputKey = "finalCv"
-
-        escopo.imprimir("Após CvTailor");
-
-        // ---------------------------------------------------------------
-        // RESULTADO FINAL
-        // ---------------------------------------------------------------
+        System.out.println("\n=== Fase 2A: Sequenciamento ===\n");
+        String cvFinal = sequencia.gerarEAdaptarCv(historicoDeVida, descricaoVaga);
         System.out.println("╔══════════════════════════════════════╗");
         System.out.println("        CV FINAL ADAPTADO PARA A VAGA   ");
         System.out.println("╚══════════════════════════════════════╝\n");
-        System.out.println(escopo.obter("finalCv"));
+        System.out.println(cvFinal);
     }
 }

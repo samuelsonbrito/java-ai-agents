@@ -1,7 +1,9 @@
 package com.estudo.agents.parte2.sequencing;
 
+import dev.langchain4j.agentic.Agent;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
+import dev.langchain4j.service.V;
 
 /**
  * Agente 1 da sequência: transforma uma história de vida em um CV estruturado.
@@ -13,22 +15,19 @@ import dev.langchain4j.service.UserMessage;
  *
  * <h2>Conceito LangChain4j demonstrado</h2>
  * <strong>Agente especializado com escopo único</strong>: cada agente da
- * sequência tem uma responsabilidade estreita. O CvGenerator só sabe
+ * sequência tem uma responsabilidade estreita. O {@code GeradorDeCv} só sabe
  * transformar história em CV — a adaptação para vaga é responsabilidade
  * do próximo agente.
  *
  * <h2>Como se conecta com as demais classes</h2>
- * {@code Main} chama {@code gerarCv(historicoDeVida)}, grava o resultado
- * no {@code AgenticScope} com a chave {@code "masterCv"}, e passa esse
- * valor para o {@code CvTailor}.
+ * {@code Main} registra este agente no {@code sequenceBuilder} com
+ * {@code outputKey("cvMestre")}. O resultado fica disponível no escopo
+ * para que o {@code AdaptadorDeCv} o leia via {@code @V("cvMestre")}.
  */
-public interface CvGenerator {
+public interface GeradorDeCv {
 
     /**
      * Gera um CV estruturado a partir de uma descrição livre da trajetória profissional.
-     *
-     * <p>O parâmetro {@code historicoDeVida} (nome em português = conceito de negócio)
-     * é injetado no {@code @UserMessage} pelo LangChain4j via a variável {@code {{it}}}.
      *
      * @param historicoDeVida texto descrevendo experiências, formação e habilidades
      * @return CV formatado em texto estruturado (seções: Resumo, Experiência, Formação, Competências)
@@ -46,6 +45,7 @@ public interface CvGenerator {
             O CV deve ser completo e genérico — não mencione vaga específica ainda.
             Escreva em português formal. Seja direto e objetivo.
             """)
-    @UserMessage("Crie um CV profissional a partir desta história de vida:\n\n{{it}}")
-    String gerarCv(String historicoDeVida);
+    @UserMessage("Crie um CV profissional a partir desta história de vida:\n\n{{historicoDeVida}}")
+    @Agent("Gera um CV limpo com base nas informações do usuário")
+    String gerarCv(@V("historicoDeVida") String historicoDeVida);
 }
