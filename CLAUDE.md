@@ -35,17 +35,18 @@ O público é um estudante: o código existe para ENSINAR, não só para funcion
 3. Cada padrão/exemplo tem sua própria classe Main executável com:
    - Instruções de execução no Javadoc (comando mvn exec:java completo)
    - Saída esperada descrita em comentário
-4. Nomes de variáveis em português quando forem conceito de negócio
-   (ex: historicoDeVida), em inglês quando forem conceito do framework
-   (ex: chatModel, embeddingStore) — para o estudante mapear com a doc oficial.
+4. Todos os identificadores (classes, interfaces, métodos, parâmetros e variáveis)
+   são nomeados em português — ex: GeradorDeCv, gerarEAdaptarCv, historicoDeVida,
+   modeloDeChat. Exceção: nomes de métodos de API do framework são mantidos em inglês
+   porque fazem parte da assinatura da lib (ex: .chatModel(), .outputKey(), .build()).
 5. Nunca colocar chaves de API no código. Sempre System.getenv().
 6. Depois de criar cada exemplo, SEMPRE rodar `mvn -q compile` e corrigir
    erros antes de seguir. Se o exemplo depende de API externa, criar também
    um teste "offline" ou explicar em comentário como validar sem chave.
 
 ## Stack fixa (não mudar sem me perguntar)
-- Java 21, Maven, LangChain4j 1.8.0 (agentic, open-ai, embeddings-bge-small-en-v15-q
-  na versão 1.8.0-beta15, document-parser-apache-pdfbox 1.8.0-beta15)
+- Java 21, Maven, LangChain4j 1.17.0 (core + agentic + open-ai), artefatos beta na
+  versão 1.17.0-beta27 (embeddings-bge-small-en-v15-q, document-parser-apache-pdfbox)
 - Chat: OpenAI gpt-4o-mini via OPENAI_API_KEY
 - Embeddings: BGE local (in-process, sem API)
 - Vector store: InMemoryEmbeddingStore (didático)
@@ -126,16 +127,15 @@ Implemente a parte1: o menor AI Service possível, ultraexplicado.
 
 ```text
 Implemente parte2.sequencing: o padrão de prompt chaining com dois agentes
-(CvGenerator gera um CV a partir de uma história de vida; CvTailor adapta
-o CV a uma vaga), combinados com AgenticServices.sequenceBuilder.
+(GeradorDeCv gera um CV a partir de uma história de vida; AdaptadorDeCv adapta
+o CV a uma vaga), orquestrados por AgenticServices.sequenceBuilder via a interface
+GeradorSequencialDeCv.
 
 Requisitos didáticos específicos:
-- No Javadoc do pacote, explique o AgenticScope (memória compartilhada) e
-  a tríade @V / {{placeholder}} / outputKey — inclusive o erro clássico de
-  nomes que não batem, com um exemplo de sintoma ("variável chega vazia").
-- No Main, imprima também o estado intermediário: mostre o masterCv gerado
-  antes do CV final adaptado, com separadores visuais, para o estudante
-  VER o encadeamento acontecendo.
+- No Javadoc do pacote, explique o escopo interno do sequenceBuilder (gerenciado
+  pela lib) e a tríade @V / {{placeholder}} / outputKey — inclusive o erro clássico
+  de nomes que não batem, com um exemplo de sintoma ("variável chega vazia").
+- No Main, mostre o CV final adaptado com separadores visuais.
 - Atualize o README e compile.
 ```
 
@@ -312,9 +312,10 @@ Fase final de consolidação:
 
 - **Marco 1 (fases 0-1):** ambiente provado. Se o Main da fase 1 responde, toda a
   infraestrutura (Java, Maven, chave, dependências) está correta. Não avance sem isso.
-- **Marco 2 (fases 2A-2C):** você domina o AgenticScope. A partir daqui os erros
-  são quase sempre de nomes de variáveis (@V/outputKey) — o log intermediário
-  pedido nos prompts existe para você depurar isso visualmente.
+- **Marco 2 (fases 2A-2C):** você domina o escopo interno do sequenceBuilder.
+  A partir daqui os erros são quase sempre de nomes de chaves (@V/outputKey não
+  batem) — os logs intermediários pedidos nos prompts existem para depurar isso
+  visualmente.
 - **Marco 3 (fases 2D-2E):** padrões dinâmicos. 2E é a fase com maior risco de
   divergência de API entre versões do LangChain4j — por isso o prompt instrui o
   Claude Code a verificar as assinaturas reais antes de implementar tudo.
@@ -326,9 +327,9 @@ Fase final de consolidação:
 
 1. **Uma fase por vez.** Cole o prompt da fase, deixe terminar, rode você mesmo o
    comando de validação da tabela, e só então passe para a próxima.
-2. **Se compilar mas se comportar estranho:** peça "adicione logs no AgenticScope
-   mostrando as chaves presentes antes e depois de cada agente" — resolve 90%
-   dos problemas de multiagente.
+2. **Se compilar mas se comportar estranho:** verifique se os nomes de chaves
+   em `@V("...")` e `outputKey("...")` batem exatamente entre agentes consecutivos
+   — esse desalinhamento resolve 90% dos problemas de multiagente.
 3. **Se um artefato Maven não existir:** o CLAUDE.md já instrui o Claude Code a
    buscar a versão vigente e avisar. Aceite a troca se for patch/minor.
 4. **Commits:** peça um commit por fase ("faça commit com mensagem descritiva
