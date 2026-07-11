@@ -49,7 +49,7 @@ public class Main {
         // AdaptadorDeCv espera @V("cvMestre"), então o gerador grava nessa chave.
         var gerador = AgenticServices.agentBuilder(GeradorDeCv.class)
                 .chatModel(modeloDeChat)
-                .outputKey("cvMestre")
+                .outputKey("cvAtual")
                 .build();
 
         // O resultado do adaptador é a saída final; "cvFinal" é o que a sequência devolve.

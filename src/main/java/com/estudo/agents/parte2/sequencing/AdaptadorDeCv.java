@@ -16,11 +16,11 @@ import dev.langchain4j.service.V;
  * <h2>Conceito LangChain4j demonstrado</h2>
  * <strong>Encadeamento via escopo interno</strong>: este agente não precisa
  * conhecer o {@code GeradorDeCv} — ele só precisa que o escopo contenha
- * o valor gravado sob a chave {@code "cvMestre"}. O desacoplamento entre
+ * o valor gravado sob a chave {@code "cvAtual"}. O desacoplamento entre
  * quem produz e quem consome é a essência do padrão de sequenciamento.
  *
  * <h2>Como se conecta com as demais classes</h2>
- * O {@code sequenceBuilder} injeta {@code "cvMestre"} (saída do agente anterior)
+ * O {@code sequenceBuilder} injeta {@code "cvAtual"} (saída do agente anterior)
  * e {@code "descricaoVaga"} (entrada original) no escopo antes de invocar
  * este agente. O resultado é gravado como {@code "cvFinal"}.
  */
@@ -33,7 +33,7 @@ public interface AdaptadorDeCv {
      * exatamente aos parâmetros do método — erro de nome é a causa nº 1 de
      * variável chegar vazia no prompt.
      *
-     * @param cvMestre      CV completo gerado pelo GeradorDeCv (lido do escopo)
+     * @param cvAtual      CV completo gerado pelo GeradorDeCv (lido do escopo)
      * @param descricaoVaga texto com os requisitos e responsabilidades da vaga
      * @return CV reformatado e adaptado à vaga, pronto para envio
      */
@@ -53,7 +53,7 @@ public interface AdaptadorDeCv {
             Adapte o CV abaixo para a vaga descrita.
 
             === CV ATUAL ===
-            {{cvMestre}}
+            {{cvAtual}}
 
             === DESCRIÇÃO DA VAGA ===
             {{descricaoVaga}}
@@ -61,5 +61,5 @@ public interface AdaptadorDeCv {
             Produza o CV adaptado completo.
             """)
     @Agent("Adapta um CV conforme instruções específicas")
-    String adaptarCv(@V("cvMestre") String cvMestre, @V("descricaoVaga") String descricaoVaga);
+    String adaptarCv(@V("cvAtual") String cvAtual, @V("descricaoVaga") String descricaoVaga);
 }

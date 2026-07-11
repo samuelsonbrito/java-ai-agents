@@ -21,8 +21,8 @@ import dev.langchain4j.service.V;
  *
  * <h2>Como se conecta com as demais classes</h2>
  * {@code Main} registra este agente no {@code sequenceBuilder} com
- * {@code outputKey("cvMestre")}. O resultado fica disponível no escopo
- * para que o {@code AdaptadorDeCv} o leia via {@code @V("cvMestre")}.
+ * {@code outputKey("cvAtual")}. O resultado fica disponível no escopo
+ * para que o {@code AdaptadorDeCv} o leia via {@code @V("cvAtual")}.
  */
 public interface GeradorDeCv {
 
